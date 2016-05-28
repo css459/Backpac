@@ -11,12 +11,16 @@
 
 # Excluding Files
 # Add any files and folders to be exlcuded to the list below
-EXCLUDE_LIST={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found","/home/*/.cache/mozilla/*","/home/*/.cache/chromium/*","/home/*/.local/share/Trash/*","/home/*/.gvfs/"}
+EXCLUDE_LIST='exclude_list.txt'
+
+# Disk to write backup to
+# This is the disk that the backup will be stored on
+DEST_DISK="/mnt/backup"
 
 # Conststant Backup Path
 # By default, the backup path is supplied as an argument but you
-# can specify a constant one here
-FILE_PATH=$1
+# can specify a constant one here, include mount point in the path
+FILE_PATH="/mnt/backup/archlinux_backup"
 
 # Backup File Name
 # This is the name the backup file will have
@@ -43,6 +47,20 @@ if [ ! -f /sbin/tar ] || [ ! -f /sbin/rsync ]; then
 	exit
 fi
 
+# Check mount point
+echo "Checking mount point: ${DEST_DISK}"
+if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
+	# Disk is not mounted
+	echo "Disk not mounted, attempting remount"
+	sudo mount -o force,rw ${DEST_DISK}
+	if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
+		echo "Could not mount ${DEST_DISK} as read write"
+		exit
+	fi
+fi
+
+echo "Disk mounted successfully, continuing..."
+
 # Check that we have a file path
 if [[ -n "$FILE_PATH" ]]; then
 
@@ -58,23 +76,27 @@ if [[ -n "$FILE_PATH" ]]; then
 	#exit
 
 	# Begin the backup operation
-	sudo rsync -aAXvHl --exclude={${EXLCUDE_LIST}} / ${FULL_PATH}
+	sudo rsync -aAXH --human-readable --delete --info=progress2 --exclude-from=${EXCLUDE_LIST} / ${FULL_PATH}
 	echo "----------------------------------------------"
-	if [ "$?" -eq "0" ]; then
-		echo "Backup successful, compressing..."
+	if [ $? -eq 0 ]; then
+		echo "Backup successful"
+		# Tarball the backup
+		if [ ${COMPRESSION} == true ]; then
+			echo "Compressing ${FULL_PATH} as ${FILE_NAME}.tar.gz"
+			sudo tar czf "${FULL_PATH}.tar.gz" ${FULL_PATH}
+			if [ $? -eq 0 ]; then
+				# Clean up
+				sudo rm -rf ${FULL_PATH}
+			fi
+			exit
+		fi
+		exit
 	else
 		echo "Rsync exited with errors (exit value ${?})"
 		echo "Partial backup at ${FULL_PATH}"
 		exit
 	fi
 
-	# Tarball the backup
-	if [ ${COMPRESSION} == true ]; then
-		echo "Compressing ${FULL_PATH} as ${FILE_NAME}.tar.gz"
-		sudo tar czf "${FILE_NAME}.tar.gz" ${FULL_PATH} ${FILE_PATH}
-	fi
-
-	exit
 else
 	echo "Missing backup destination path, exiting..."
 	exit
