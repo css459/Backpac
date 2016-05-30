@@ -2,8 +2,8 @@
 #
 #	BACKPAC
 #
-# 		An Arch Backup script with Rsync and Tar
-# 		Cole Smith | css459@cims.nyu.edu
+#	An Arch Backup script with Rsync and Tar
+# 	Cole Smith | css459@cims.nyu.edu
 
 #
 #	CONFIGURATION
@@ -11,7 +11,7 @@
 
 # Excluding Files
 # Add any files and folders to be exlcuded to the list below
-EXCLUDE_LIST='src/exclude_list.txt'
+EXCLUDE_LIST='exclude_list.txt'
 
 # Disk to write backup to
 # This is the disk that the backup will be stored on
