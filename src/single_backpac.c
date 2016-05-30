@@ -10,6 +10,5 @@
 
 int single_backup( char** paths, int compression )
 {
-
 	return 0;
 }
