@@ -6,7 +6,9 @@
 /mnt/*
 /media/*
 /lost+found
+/cache/
 /home/*/.cache/mozilla/*
 /home/*/.cache/chromium/*
 /home/*/.local/share/Trash/*
 /home/*/.gvfs/
+*.log
