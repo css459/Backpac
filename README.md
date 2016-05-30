@@ -1,4 +1,4 @@
-# Backpac
+# Backpac 🎒
 A simple and comprehensive backup script for Linux using Rsync and Tar
 
 Configuration allows for:
