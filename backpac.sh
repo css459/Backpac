@@ -9,6 +9,10 @@
 #	CONFIGURATION
 #
 
+# What to Backup
+# Select the directory to backup
+BACKUP_PATH="/"
+
 # Excluding Files
 # Add any files and folders to be exlcuded to the list below
 EXCLUDE_LIST='exclude_list.txt'
@@ -77,7 +81,7 @@ if [[ -n "$FILE_PATH" ]]; then
 	echo "----------------------------------------------"
 
 	# Begin the backup operation
-	sudo rsync -aAXH --human-readable --delete --info=progress2 --exclude-from=${EXCLUDE_LIST} / ${FULL_PATH}
+	sudo rsync -aAXH --human-readable --delete --info=progress2 --exclude-from=${EXCLUDE_LIST} ${BACKUP_PATH}  ${FULL_PATH}
 	echo "----------------------------------------------"
 	if [ $? -eq 0 ]; then
 		echo "Backup successful"
