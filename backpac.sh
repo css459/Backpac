@@ -47,14 +47,31 @@ AUTOUNMOUNT=true
 # Check that we are root
 if [ "$EUID" -ne 0 ]; then
 	echo "Please run as root"
-	exit
+	exit 1
 fi
 
-# Check rsync and tar are installed
-if [ ! -f /sbin/tar ] || [ ! -f /sbin/rsync ]; then
-	echo "Tar or Rsync not installed, exiting..."
-	exit
+# Check if rsync in installed (required)
+if ! type "rsync" &> /dev/null; then
+	echo "Rsync not installed, exiting..."
+	exit 1
 fi
+
+# Check that tar is optionally installed
+if [ ${COMPRESSION} == true ]; then
+	if ! type "tar" &> /dev/null; then
+		echo "Compression is enabled but tar is not instlled. Will not compress." 
+		COMPRESSION=false
+	fi
+fi
+
+# Debugging
+exit
+
+# Check rsync and tar are installed
+#if [ ! -f /sbin/tar ] || [ ! -f /sbin/rsync ]; then
+#	echo "Tar or Rsync not installed, exiting..."
+#	exit
+#fi
 
 # Check mount point
 echo "Checking mount point: ${DEST_DISK}"
@@ -64,7 +81,7 @@ if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
 	sudo mount -o force,rw ${DEST_DISK}
 	if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
 		echo "Could not mount ${DEST_DISK} as read write"
-		exit
+		exit 1
 	fi
 fi
 
@@ -109,6 +126,7 @@ if [[ -n "$FILE_PATH" ]]; then
 				echo "Umount successful"
 			else
 				echo "Failed to unmount ${DEST_DISK}"
+				exit 1
 			fi
 		fi
 
@@ -116,10 +134,10 @@ if [[ -n "$FILE_PATH" ]]; then
 	else
 		echo "Rsync exited with errors (exit value ${?})"
 		echo "Partial backup at ${FULL_PATH}"
-		exit
+		exit 1
 	fi
 
 else
 	echo "Missing backup destination path, exiting..."
-	exit
+	exit 1
 fi
