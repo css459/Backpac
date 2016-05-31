@@ -64,9 +64,6 @@ if [ ${COMPRESSION} == true ]; then
 	fi
 fi
 
-# Debugging
-exit
-
 # Check rsync and tar are installed
 #if [ ! -f /sbin/tar ] || [ ! -f /sbin/rsync ]; then
 #	echo "Tar or Rsync not installed, exiting..."
