@@ -29,7 +29,7 @@ FILE_PATH="/mnt/backup/archlinux_backup"
 # Backup File Name
 # This is the name the backup file will have
 # By default, it's in a form like: Backup--2016-2-23
-FILE_NAME="Backup--$(date +%Y-%m-%d)"
+FILE_NAME="Dotfile_Backup--$(date +%Y-%m-%d)"
 
 # Compression
 # Compression is enabled by default
@@ -43,6 +43,8 @@ AUTOUNMOUNT=true
 #
 #	SCRIPT
 #
+
+CUSTOM_PAC=$1
 
 # Check that we are root
 if [ "$EUID" -ne 0 ]; then
@@ -64,21 +66,22 @@ if [ ${COMPRESSION} == true ]; then
 	fi
 fi
 
-# Check rsync and tar are installed
-#if [ ! -f /sbin/tar ] || [ ! -f /sbin/rsync ]; then
-#	echo "Tar or Rsync not installed, exiting..."
-#	exit
-#fi
+# Check if we are given a custom backpac and handle it
+# if [ -n "$CUSTOM_PAC" ]; then
+# 	
+# fi
 
-# Check mount point
-echo "Checking mount point: ${DEST_DISK}"
-if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
-	# Disk is not mounted
-	echo "Disk not mounted, attempting remount"
-	sudo mount -o force,rw ${DEST_DISK}
+# Check mount point, only if it is NOT "/"
+if [ ! "${DEST_DISK}" == "/" ]; then
+	echo "Checking mount point: ${DEST_DISK}"
 	if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
-		echo "Could not mount ${DEST_DISK} as read write"
-		exit 1
+		# Disk is not mounted
+		echo "Disk not mounted, attempting remount"
+		sudo mount -o force,rw ${DEST_DISK}
+		if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
+			echo "Could not mount ${DEST_DISK} as read write"
+			exit 1
+		fi
 	fi
 fi
 
@@ -115,15 +118,17 @@ if [[ -n "$FILE_PATH" ]]; then
 			fi
 		fi
 
-		# Auto-unmount
-		if [ ${AUTOUNMOUNT} == true ]; then
-			echo "Unmounting backup disk: ${DEST_DISK} ..."
-			sudo umount ${DEST_DISK}
-			if [ $? -eq 0 ]; then
-				echo "Umount successful"
-			else
-				echo "Failed to unmount ${DEST_DISK}"
-				exit 1
+		# Auto-unmount, only if it is NOT "/"
+		if [ ! "${DEST_DISK}" == "/" ]; then
+			if [ ${AUTOUNMOUNT} == true ]; then
+				echo "Unmounting backup disk: ${DEST_DISK} ..."
+				sudo umount ${DEST_DISK}
+				if [ $? -eq 0 ]; then
+					echo "Umount successful"
+				else
+					echo "Failed to unmount ${DEST_DISK}"
+					exit 1
+				fi
 			fi
 		fi
 

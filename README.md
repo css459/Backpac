@@ -1,4 +1,11 @@
-# Backpac 🎒
+# Backpac DEVELOPMENT
+
+Todo
+* Implement if statement on parsing custom backpac argument
+* Implement support for incremental backups
+* Add protections against dangerous operations (needless unmount, etc)
+* Make AUTOMOUNT false by default
+
 A simple and comprehensive backup script for Linux using Rsync and Tar
 
 Configuration allows for:
