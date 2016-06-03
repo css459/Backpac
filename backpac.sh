@@ -75,7 +75,7 @@ echo "Checking mount point: ${DEST_DISK}"
 if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
 	# Disk is not mounted
 	echo "Disk not mounted, attempting remount"
-	sudo mount -o force,rw ${DEST_DISK}
+	sudo mount -o rw ${DEST_DISK}
 	if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
 		echo "Could not mount ${DEST_DISK} as read write"
 		exit 1
