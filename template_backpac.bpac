@@ -10,11 +10,11 @@
 
 # What to Backup
 # Select the directory to backup
-BACKUP_PATH="/home"
+BACKUP_PATH ="/home"
 
 # Excluding Files
 # Add any files and folders to be exlcuded to the list below
-EXCLUDE_LIST='exclude_list_home.txt'
+EXCLUDE_LIST ="exclude_list_home.txt"
 
 # Disk to write backup to
 # This is the disk that the backup will be stored on

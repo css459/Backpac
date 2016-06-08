@@ -5,52 +5,31 @@
 #	An Arch Backup script with Rsync and Tar
 # 	Cole Smith | css459@cims.nyu.edu
 
-#
-#	CONFIGURATION
-#
-
-# What to Backup
-# Select the directory to backup
-BACKUP_PATH="/"
-
-# Excluding Files
-# Add any files and folders to be exlcuded to the list below
-EXCLUDE_LIST='exclude_list.txt'
-
-# Disk to write backup to
-# This is the disk that the backup will be stored on
-DEST_DISK="/mnt/backup"
-
-# Conststant Backup Path
-# By default, the backup path is supplied as an argument but you
-# can specify a constant one here, include mount point in the path
-FILE_PATH="/mnt/backup/archlinux_backup"
-
-# Backup File Name
-# This is the name the backup file will have
-# By default, it's in a form like: Backup--2016-2-23
-FILE_NAME="Dotfile_Backup--$(date +%Y-%m-%d)"
-
-# Compression
-# Compression is enabled by default
-# This can be resource intensive
-COMPRESSION=true
-
-# Auto Unmount
-# Automatically unmount the backup disk
-AUTOUNMOUNT=true
-
-#
-#	SCRIPT
-#
-
-CUSTOM_PAC=$1
+# Reads configuration given a file
+function parse_conf
+{
+	INPUT_CONFING=$1
+	if [ -n "$INPUT_CONFING" ]; then
+		BACKUP_PATH=$(awk -F ' *= *' '$1=="BACKUP_PATH" {print $2}' ${INPUT_CONFING})
+		EXCLUDE_LIST=$(awk -F ' *= *' '$1=="EXCLUDE_LIST" {print $2}' ${INPUT_CONFING})
+		DEST_DISK=$(awk -F ' *= *' '$1=="DEST_DISK" {print $2}' ${INPUT_CONFING})
+		FILE_PATH=$(awk -F ' *= *' '$1=="FILE_PATH" {print $2}' ${INPUT_CONFING})
+		FILE_NAME=$(awk -F ' *= *' '$1=="FILE_NAME" {print $2}' ${INPUT_CONFING})
+		COMPRESSION=$(awk -F ' *= *' '$1=="COMPRESSION" {print $2}' ${INPUT_CONFING})
+		AUTOUNMOUNT=$(awk -F ' *= *' '$1=="AUTOUNMOUNT" {print $2}' ${INPUT_CONFING})
+	fi
+}
 
 # Check that we are root
 if [ "$EUID" -ne 0 ]; then
 	echo "Please run as root"
 	exit 1
 fi
+
+# Parse default config file
+USER_HOME=$(eval echo ~${SUDO_USER})
+DEFAULT_CONFIG_PATH="${USER_HOME}/.config/backpac/config"
+parse_conf ${DEFAULT_CONFIG_PATH}
 
 # Check if rsync in installed (required)
 if ! type "rsync" &> /dev/null; then
@@ -66,10 +45,74 @@ if [ ${COMPRESSION} == true ]; then
 	fi
 fi
 
-# Check if we are given a custom backpac and handle it
-# if [ -n "$CUSTOM_PAC" ]; then
-# 	
-# fi
+# Handle config overrides as arguments
+OPTIND=1
+CUSTOM_PAC=""
+
+while getopts "F:B:E:D:P:N:C:A:" opt; do
+	case "$opt" in
+	F)	CUSTOM_PAC=$OPTARG
+		parse_conf ${CUSTOM_PAC}
+		;;
+	B)	BACKUP_PATH=$OPTARG
+		;;
+	E)	EXCLUDE_LIST=$OPTARG
+		;;
+	D)	DEST_DISK=$OPTARG
+		;;
+	P)	FILE_PATH=$OPTARG
+		;;
+	N)	FILE_NAME=$OPTARG
+		;;
+	C)	COMPRESSION=$OPTARG
+		if [ ${COMPRESSION} == false ]; then 
+			COMPRESSION=false 
+		elif [ ${COMPRESSION} == true ]; then 
+			COMPRESSION=true
+		else
+			echo "Config file erorr at COMPRESSION"
+			exit 1
+		fi
+		;;
+	A)	AUTOUNMOUNT=$OPTARG
+		if [ ${AUTOUNMOUNT} == false ]; then 
+			AUTOUNMOUNT=false 
+		elif [ ${AUTOUNMOUNT} == true ]; then 
+			AUTOUNMOUNT=true 
+		else
+			echo "Config file erorr at COMPRESSION"
+			exit 1
+		fi
+		;;
+	*)	echo "Unknown argument"
+		exit 1
+	esac
+done
+
+# Debugging
+#------------------------------
+#echo ${CUSTOM_PAC}
+#echo ${BACKUP_PATH}
+#echo ${EXCLUDE_LIST}
+#echo ${DEST_DISK}
+#echo ${FILE_PATH}
+#echo ${FILE_NAME}
+#echo ${COMPRESSION}
+#echo ${AUTOUNMOUNT}
+#
+#echo "after custom pac --------------------"
+#parse_conf ${CUSTOM_PAC}
+#
+#echo ${CUSTOM_PAC}
+#echo ${BACKUP_PATH}
+#echo ${EXCLUDE_LIST}
+#echo ${DEST_DISK}
+#echo ${FILE_PATH}
+#echo ${FILE_NAME}
+#echo ${COMPRESSION}
+#echo ${AUTOUNMOUNT}
+#exit
+#------------------------------
 
 # Check mount point, only if it is NOT "/"
 if [ ! "${DEST_DISK}" == "/" ]; then
