@@ -36,4 +36,4 @@ You can override certain config options for a single backup using these argument
 So a single backup using the default config, but allowing compression and changing the file name
 would look like:
 
-	`sudo ./backpac -N Single_Backup_Home -A true`
+	sudo ./backpac -N Single_Backup_Home -A true
