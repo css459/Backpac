@@ -1,0 +1,42 @@
+# Custom Backpac File
+# pac1.bpac
+#
+# Cole Smith
+
+# Just uncomment the things you need to change for
+# this particular backpac and the config will fill
+# in the rest.
+
+
+# What to Backup
+# Select the directory to backup
+BACKUP_PATH ="/home"
+
+# Excluding Files
+# Add any files and folders to be exlcuded to the list below
+EXCLUDE_LIST ="exclude_list_home.txt"
+
+# Disk to write backup to
+# This is the disk that the backup will be stored on
+# Use "/" to save backup to your root disk
+DEST_DISK="/"
+
+# Conststant Backup Path
+# By default, the backup path is supplied as an argument but you
+# can specify a constant one here, include mount point in the path
+FILE_PATH="/home/cole/Documents"
+
+# Backup File Name
+# This is the name the backup file will have
+# By default, it's in a form like: Backup--2016-2-23
+FILE_NAME="Backup--$(date +%Y-%m-%d)"
+
+# Compression
+# Compression is enabled by default
+# This can be resource intensive
+COMPRESSION=false
+
+# Auto Unmount
+# Automatically unmount the backup disk
+# THIS WILL BE FORCED TO FALSE IF BACKING UP TO ROOT DISK
+AUTOUNMOUNT=false

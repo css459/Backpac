@@ -1,0 +1,30 @@
+# What to Backup
+# Select the directory to backup
+BACKUP_PATH="/"
+
+# Excluding Files
+# Add any files and folders to be exlcuded to the list below
+EXCLUDE_LIST="~/.config/backpac/exclude_list.txt"
+
+# Disk to write backup to
+# This is the disk that the backup will be stored on
+DEST_DISK="/mnt/backup"
+
+# Conststant Backup Path
+# By default, the backup path is supplied as an argument but you
+# can specify a constant one here, include mount point in the path
+FILE_PATH="/mnt/backup/archlinux_backup"
+
+# Backup File Name
+# This is the name the backup file will have
+# By default, it's in a form like: Backup--2016-2-23
+FILE_NAME="Backup--$(date +%Y-%m-%d)"
+
+# Compression
+# Compression is enabled by default
+# This can be resource intensive
+COMPRESSION=true
+
+# Auto Unmount
+# Automatically unmount the backup disk
+AUTOUNMOUNT=false
