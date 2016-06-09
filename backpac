@@ -49,6 +49,17 @@ fi
 OPTIND=1
 CUSTOM_PAC=""
 
+# Debugging
+#------------------------------
+#echo ${CUSTOM_PAC}
+#echo ${BACKUP_PATH}
+#echo ${EXCLUDE_LIST}
+#echo ${DEST_DISK}
+#echo ${FILE_PATH}
+#echo ${FILE_NAME}
+#echo ${COMPRESSION}
+#echo ${AUTOUNMOUNT}
+
 while getopts "F:B:E:D:P:N:C:A:" opt; do
 	case "$opt" in
 	F)	CUSTOM_PAC=$OPTARG
@@ -99,23 +110,10 @@ done
 #echo ${FILE_NAME}
 #echo ${COMPRESSION}
 #echo ${AUTOUNMOUNT}
-#
-#echo "after custom pac --------------------"
-#parse_conf ${CUSTOM_PAC}
-#
-#echo ${CUSTOM_PAC}
-#echo ${BACKUP_PATH}
-#echo ${EXCLUDE_LIST}
-#echo ${DEST_DISK}
-#echo ${FILE_PATH}
-#echo ${FILE_NAME}
-#echo ${COMPRESSION}
-#echo ${AUTOUNMOUNT}
-#exit
 #------------------------------
 
 # Check mount point, only if it is NOT "/"
-if [ ! "${DEST_DISK}" == "/" ]; then
+if [ "$DEST_DISK" != "/" ]; then
 	echo "Checking mount point: ${DEST_DISK}"
 	if [ $(mount | grep -c ${DEST_DISK}) != 1 ]; then
 		# Disk is not mounted
@@ -137,7 +135,7 @@ if [[ -n "$FILE_PATH" ]]; then
 	FILE_PATH=${FILE_PATH%/}
 	FULL_PATH="$FILE_PATH/$FILE_NAME"
 
-	echo "Backing up '/' to ${FULL_PATH}"
+	echo "Backing up '${BACKUP_PATH}' to '${FULL_PATH}'"
 	echo "----------------------------------------------"
 
 	# Begin the backup operation

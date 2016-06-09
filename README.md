@@ -4,16 +4,17 @@ A simple and comprehensive backup script for Linux using Rsync and Tar
 
 ## Configuration
 
-* Backup path 			(default '/')
-* Exclude list 			(default provided)
-* Destination disk mount point 	(default '/mnt/backup')
-* Backup file path 		(default '/mnt/backup/archlinux_backup')
-* File name 			(default example 'Backup--2016-2-28)
-* Compression 			(default on)
-* Auto unmount 			(default on)
+* Backup path 			(default `/`)
+* Exclude list 			(default `~/.config/backpac/exclude_list.txt`)
+* Destination disk mount point 	(default `/mnt/backup`)
+* Backup file path 		(default `/mnt/backup/archlinux_backup`)
+* File name 			(default `Backup--2016-2-28`)
+* Compression 			(default `false`)
+* Auto unmount 			(default `false`)
 
 ## Install
-The default config file should be placed in `~/.config/backpac/config`
+The default config file should be placed as `~/.config/backpac/config`
+The exclude list should also be placed as `~/.config/backpac/exclude_list.txt` by default
 
 ## Using custom config files
 
