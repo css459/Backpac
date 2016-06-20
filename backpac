@@ -26,10 +26,11 @@ function parse_conf
 }
 
 # Check that we are root
-if [ "$EUID" -ne 0 ]; then
-	echo "Please run as root"
-	exit 1
-fi
+(( EUID != 0 )) && exec sudo -- "$0" "$@"
+#if [ "$EUID" -ne 0 ]; then
+	#echo "Please run as root"
+	#exit 1
+#fi
 
 # Parse default config file
 USER_HOME=$(eval echo ~${SUDO_USER})
