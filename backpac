@@ -63,16 +63,16 @@ CUSTOM_PAC=""
 
 # Debugging
 #------------------------------
-echo ${DEFAULT_CONFIG_PATH}
-echo ${CUSTOM_PAC}
-echo ${BACKUP_PATH}
-echo ${EXCLUDE_LIST}
-echo ${DEST_DISK}
-echo ${FILE_PATH}
-echo ${FILE_NAME}
-echo ${COMPRESSION}
-echo ${AUTOUNMOUNT}
-exit
+#echo ${DEFAULT_CONFIG_PATH}
+#echo ${CUSTOM_PAC}
+#echo ${BACKUP_PATH}
+#echo ${EXCLUDE_LIST}
+#echo ${DEST_DISK}
+#echo ${FILE_PATH}
+#echo ${FILE_NAME}
+#echo ${COMPRESSION}
+#echo ${AUTOUNMOUNT}
+#exit
 
 while getopts "F:B:E:D:P:N:C:A:" opt; do
 	case "$opt" in
