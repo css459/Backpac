@@ -8,15 +8,20 @@
 # Reads configuration given a file
 function parse_conf
 {
-	INPUT_CONFING=$1
-	if [ -n "$INPUT_CONFING" ]; then
-		BACKUP_PATH=$(awk -F ' *= *' '$1=="BACKUP_PATH" {print $2}' ${INPUT_CONFING})
-		EXCLUDE_LIST=$(awk -F ' *= *' '$1=="EXCLUDE_LIST" {print $2}' ${INPUT_CONFING})
-		DEST_DISK=$(awk -F ' *= *' '$1=="DEST_DISK" {print $2}' ${INPUT_CONFING})
-		FILE_PATH=$(awk -F ' *= *' '$1=="FILE_PATH" {print $2}' ${INPUT_CONFING})
-		FILE_NAME=$(awk -F ' *= *' '$1=="FILE_NAME" {print $2}' ${INPUT_CONFING})
-		COMPRESSION=$(awk -F ' *= *' '$1=="COMPRESSION" {print $2}' ${INPUT_CONFING})
-		AUTOUNMOUNT=$(awk -F ' *= *' '$1=="AUTOUNMOUNT" {print $2}' ${INPUT_CONFING})
+	INPUT_CONFIG=$1
+
+	# Replace '~' with the users home folder
+	USER_HOME=$(eval echo ~${SUDO_USER})
+	INPUT_CONFIG=${INPUT_CONFIG/~/$USER_HOME}
+
+	if [ -n "$INPUT_CONFIG" ]; then
+		BACKUP_PATH=$(awk -F ' *= *' '$1=="BACKUP_PATH" {print $2}' ${INPUT_CONFIG})
+		EXCLUDE_LIST=$(awk -F ' *= *' '$1=="EXCLUDE_LIST" {print $2}' ${INPUT_CONFIG})
+		DEST_DISK=$(awk -F ' *= *' '$1=="DEST_DISK" {print $2}' ${INPUT_CONFIG})
+		FILE_PATH=$(awk -F ' *= *' '$1=="FILE_PATH" {print $2}' ${INPUT_CONFIG})
+		FILE_NAME=$(awk -F ' *= *' '$1=="FILE_NAME" {print $2}' ${INPUT_CONFIG})
+		COMPRESSION=$(awk -F ' *= *' '$1=="COMPRESSION" {print $2}' ${INPUT_CONFIG})
+		AUTOUNMOUNT=$(awk -F ' *= *' '$1=="AUTOUNMOUNT" {print $2}' ${INPUT_CONFIG})
 	fi
 }
 
@@ -30,6 +35,13 @@ fi
 USER_HOME=$(eval echo ~${SUDO_USER})
 DEFAULT_CONFIG_PATH="${USER_HOME}/.config/backpac/config"
 parse_conf ${DEFAULT_CONFIG_PATH}
+
+# Append the current date to File Name
+CURRENT_DATE=$(date +%Y-%m-%d)
+FILE_NAME="${FILE_NAME}--${CURRENT_DATE}"
+
+# Replace '~' with the users home folder
+EXCLUDE_LIST=${EXCLUDE_LIST/"~"/$USER_HOME}
 
 # Check if rsync in installed (required)
 if ! type "rsync" &> /dev/null; then
@@ -51,14 +63,16 @@ CUSTOM_PAC=""
 
 # Debugging
 #------------------------------
-#echo ${CUSTOM_PAC}
-#echo ${BACKUP_PATH}
-#echo ${EXCLUDE_LIST}
-#echo ${DEST_DISK}
-#echo ${FILE_PATH}
-#echo ${FILE_NAME}
-#echo ${COMPRESSION}
-#echo ${AUTOUNMOUNT}
+echo ${DEFAULT_CONFIG_PATH}
+echo ${CUSTOM_PAC}
+echo ${BACKUP_PATH}
+echo ${EXCLUDE_LIST}
+echo ${DEST_DISK}
+echo ${FILE_PATH}
+echo ${FILE_NAME}
+echo ${COMPRESSION}
+echo ${AUTOUNMOUNT}
+exit
 
 while getopts "F:B:E:D:P:N:C:A:" opt; do
 	case "$opt" in

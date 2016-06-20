@@ -24,7 +24,7 @@ FILE_PATH=/mnt/backup/archlinux_backup
 # Backup File Name
 # This is the name the backup file will have
 # By default, it's in a form like: Backup--2016-2-23
-FILE_NAME=Backup--$(date +%Y-%m-%d)
+FILE_NAME=Backup
 
 # Compression
 # Compression is enabled by default
