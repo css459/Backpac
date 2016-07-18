@@ -14,9 +14,9 @@ A simple and comprehensive backup script for Linux using Rsync and Tar
 
 ## Install
 
-Chmod Backpac `chmod +x backpac`
-Place the config file and exclude list in `~/.config/backpac/`
-Run with `sudo ./backpac` or plce in your bin folder to run with `sudo backpac`
+* Chmod Backpac `chmod +x backpac`
+* Place the config file and exclude list in `~/.config/backpac/`
+* Run with `sudo ./backpac` or plce in your bin folder to run with `sudo backpac`
 
 ## Using custom config files
 
