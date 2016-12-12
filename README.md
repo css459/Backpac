@@ -1,3 +1,12 @@
+# TODO
+
+- [ ] Bug: where backpac cannot find the backup path (try to make it)
+- [ ] Mustdo: Create PKGBUILD
+- [ ] Mustdo: Create man page
+- [ ] Feature: Incremental Backups
+- [ ] Feature: Make backup bootable
+- [ ] Feature: Make the compression more efficient
+
 # Backpac 🎒
 
 A simple and comprehensive backup script for Linux using Rsync and Tar
